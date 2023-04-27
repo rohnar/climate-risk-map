@@ -2,23 +2,17 @@
 </script>
 
 <template>
-  <div class="header">
-    <span>Map</span>
-    <span>Chart</span>
-    <span>Data</span>
+  <div class="flex w-full items-center px-3 text-lg">
+    <div class="flex w-full font-bold">
+      <span>Asset Explorer</span>
+    </div>
+    <div class="flex w-full gap-2rem text-right justify-end">
+      <RohnarButton type="text">Map</RohnarButton>
+      <RohnarButton type="text">Chart</RohnarButton>
+    </div>
   </div>
 </template>
 
 <style>
-.header {
-    background-color: antiquewhite;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8rem;
-}
-.header>span {
-    color: red;
-}
+
 </style>
