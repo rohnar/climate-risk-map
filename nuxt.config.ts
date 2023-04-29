@@ -5,5 +5,8 @@ export default defineNuxtConfig({
         'nuxt-windicss',
         '@element-plus/nuxt'
     ],
-    elementPlus: { /** Options */ }
+    elementPlus: { /** Options */ },
+    app: {
+        baseURL: '/climate-risk-data/'
+    }
 })
