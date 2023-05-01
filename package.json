@@ -6,15 +6,20 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "gh-pages -d dist -t true"
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.4",
     "@types/node": "^18",
+    "gh-pages": "^5.0.0",
     "nuxt": "^3.4.2",
     "nuxt-windicss": "^2.6.1"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
     "leaflet": "^1.9.3",
     "papaparse": "^5.4.1"
   }

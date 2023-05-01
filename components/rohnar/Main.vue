@@ -11,7 +11,7 @@ const marks = computed(()=>{
   if (limits.value.year) {
     let year = limits.value.year[0]
     while (year <= limits.value.year[1]) {
-      result[year] = ''+year
+      result[year] = {label: ''+year, style: {color: 'black', fontWeight: 'bold'}}
       year+=10
     }
   }
@@ -83,20 +83,21 @@ onMounted(async ()=>{
 
 <template>
   <RohnarHeader class="h-[5vh]" />
-  <div class="h-[95vh] pb-1rem px-1rem grid grid-template-rows[400px,50px,1fr]" ref="dashboard">
-    <RohnarMap v-if="currentSubset?.length > 0" ref="mapDiv" />
-    <div class="flex items-center mb-5 mx-auto w-[90%] gap-1rem">
+  <div class="h-[95vh] pb-1rem px-1rem grid grid-template-rows[400px,50px,50px,1fr] items-start" ref="dashboard">
+    <RohnarMap v-if="currentSubset?.length > 0" ref="mapDiv">
       <el-slider v-if="limits.year" :min="limits.year[0]" :max="limits.year[1]" 
         show-stops :step="10" :marks="marks"
         @change="filterData"
         v-model="filterOptions.decade">
       </el-slider>
-      <!-- minLat
-      <input v-model="filterOptions.minLat">
-      maxLat
-      <input v-model="filterOptions.maxLat"> -->
-      <!-- <RohnarButton type="info" class="m-2" @click="filterData">Load</RohnarButton> -->
-    </div>
+    </RohnarMap>
+    <!-- <div class="flex items-center mb-5 mx-auto w-[97%] gap-1rem">
+      <el-slider v-if="limits.year" :min="limits.year[0]" :max="limits.year[1]" 
+        show-stops :step="10" :marks="marks"
+        @change="filterData"
+        v-model="filterOptions.decade">
+      </el-slider>
+    </div> -->
     <ClimateRiskData
       :headers="['Year','Asset Name', 'Business Category', 'Risk Rating', 'Risk Factors']" 
       :columnWidths="[10,20,20,10,60]"

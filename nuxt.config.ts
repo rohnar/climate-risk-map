@@ -6,7 +6,7 @@ export default defineNuxtConfig({
         '@element-plus/nuxt'
     ],
     elementPlus: { /** Options */ },
-    app: {
-        baseURL: '/climate-risk-data/'
-    }
+    css: [
+        '@fortawesome/fontawesome-svg-core/styles.css'
+    ]
 })

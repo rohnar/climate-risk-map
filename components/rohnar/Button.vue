@@ -3,6 +3,9 @@ const props = defineProps({
     type: {
         type: String,
         default: 'primary'
+    },
+    title: {
+        type: String
     }
 })
 const typeStyle = {
@@ -16,7 +19,7 @@ const buttonStyle = typeStyle[props.type]
 </script>
 
 <template>
-    <button :class="buttonStyle">
+    <button :class="buttonStyle" :title="title">
         <slot></slot>
     </button>
 </template>
