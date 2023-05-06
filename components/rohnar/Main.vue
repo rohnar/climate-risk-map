@@ -45,7 +45,7 @@ function removeFilter(filter) {
 }
 
 function onResize() {
-  tableHeight.value = dashboard.value.offsetHeight - 450;
+  tableHeight.value = dashboard.value.offsetHeight - 460;
 }
 
 onMounted(async () => {
@@ -54,7 +54,7 @@ onMounted(async () => {
   // element ui table does not respect relative sizing, this is a workaround
   await nextTick();
   window.addEventListener("resize", onResize);
-  tableHeight.value = dashboard.value.offsetHeight - 450;
+  tableHeight.value = dashboard.value.offsetHeight - 460;
 });
 onUnmounted(() => {
   window.removeEventListener("resize", onResize);
@@ -131,6 +131,16 @@ onUnmounted(() => {
       </ClimateRiskData>
       <ClimateRiskChart :height="tableHeight" v-else-if="showChart">
       </ClimateRiskChart>
+      <div class="flex px-2 items-center justify-between" v-if="currentSubsetSortable && !showChart">
+          <span><b class="text-sky-600">
+            {{ (pagination.currentPage-1)*pagination.pageSize + 1 }}
+          </b>&nbsp;/&nbsp;{{currentSubsetSortable.length}}</span>
+          <el-select v-model="pagination.pageSize">
+            <el-option :value="10">10</el-option>
+            <el-option :value="20">20</el-option>
+            <el-option :value="50">50</el-option>
+          </el-select>
+      </div>
     </div>
   </div>
 </template>

@@ -147,6 +147,7 @@ watch(currentZoom, (newValue, oldValue)=>{
 })
 
 watch(mapBoundaries, (newValue, oldValue)=>{
+    loadMarkers()
 })
 watch(mapFocus, (newValue, oldValue)=>{
     map.flyTo(L.latLng(newValue[0],newValue[1]))
