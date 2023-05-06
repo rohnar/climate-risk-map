@@ -50,7 +50,7 @@ function preFilterData() {
                 </template>
             </el-input>
           </div>
-          <RohnarButton>Apply Filters</RohnarButton>
+          <RohnarButton @click="preFilterData">Apply Filters</RohnarButton>
         </div>
       </el-popover>
     </div>

@@ -142,7 +142,7 @@ onUnmounted(() => {
   /* background-color: #aad3df; */
 }
 .tab {
-  transition: padding 1s;
+  transition: padding 0.3s;
   color: rgb(91, 90, 90);
   /* background-color: white; */
   width: auto;
@@ -159,15 +159,13 @@ onUnmounted(() => {
   cursor: pointer;
 }
 .active-tab {
-  transition: padding 1s;
+  transition: padding 0.3s;
   padding: 0 5rem;
   border: solid 1px black;
   border-bottom: none;
   color: black;
 }
 .layout {
-  /* position: absolute; */
-  /* width: 95%; */
   height: 95vh;
   display: grid;
   align-items: start;
@@ -179,11 +177,12 @@ onUnmounted(() => {
 </style>
 <style>
 .table-border {
+  padding: 5px;
   height: 100%;
   justify-content: center;
-  border: 2px solid #adadad;
+  border: 1px solid #adadad;
   border-radius: 10px 0 8px 8px;
-  /* box-shadow: 0 2px 4px; */
+  box-shadow: 0 1px 2px;
 }
 
 </style>
