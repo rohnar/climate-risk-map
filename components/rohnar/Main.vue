@@ -153,7 +153,7 @@ onUnmounted(() => {
 }
 .tab {
   transition: padding 0.3s;
-  color: rgb(91, 90, 90);
+  color: rgb(142, 142, 142);
   /* background-color: white; */
   width: auto;
   display: flex;
@@ -171,9 +171,9 @@ onUnmounted(() => {
 .active-tab {
   transition: padding 0.3s;
   padding: 0 5rem;
-  border: solid 1px black;
+  border: solid 1px #666666;
   border-bottom: none;
-  color: black;
+  color: #464646;
 }
 .layout {
   height: 95vh;
@@ -190,7 +190,7 @@ onUnmounted(() => {
   padding: 5px;
   height: 100%;
   justify-content: center;
-  border: 1px solid #adadad;
+  border: 1px solid #666666;
   border-radius: 10px 0 8px 8px;
   box-shadow: 0 1px 2px;
 }
