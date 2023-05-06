@@ -27,7 +27,7 @@ function preFilterData() {
     <div class="flex w-full font-bold">
       <span>Asset Explorer</span>
     </div>
-    <div class="flex w-full gap-3px text-right justify-end">
+    <div class="flex w-full gap-6px text-right justify-end">
       <el-input class="focus:bg-red-200" placeholder="Search for an asset" 
             @keyup.enter="preFilterData" v-model="filterTerms.asset">
             <template #suffix>
@@ -43,7 +43,7 @@ function preFilterData() {
         <div class="flex flex-col gap-1rem">
           <div class="flex flex-col">
             <small>Risk Factor</small>
-            <el-input class="focus:bg-red-200" placeholder="Search for a risk" 
+            <el-input placeholder="Search for a risk factor" 
                 @keyup.enter="preFilterData" v-model="filterTerms.riskFactor">
                 <template #suffix>
                   <font-awesome-icon @click="preFilterData" class="hover:text-blue-500 cursor-pointer" icon="fa fa-search"></font-awesome-icon>
