@@ -6,7 +6,6 @@ let myChart;
 const limits = ref([+currentSubset.value[0].Year, +currentSubset.value[currentSubset.value.length - 1].Year])
 const chartData = computed(()=>{
   if (currentSubset) {
-    console.log('updating chart....')
     let lookup = new Map()
     //take advantage of year sorting
     for (let i=0; i<currentSubset.value.length; i++) {

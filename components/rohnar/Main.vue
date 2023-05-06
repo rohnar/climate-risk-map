@@ -38,7 +38,6 @@ const appliedFilters = computed(()=>{
 })
 
 function removeFilter(filter) {
-  console.log(filter)
   if (filter !== 'decade') {
     delete filterOptions.value[filter]
     filterData()
@@ -47,7 +46,6 @@ function removeFilter(filter) {
 
 function onResize() {
   tableHeight.value = dashboard.value.offsetHeight - 450;
-  console.log("resizing table", tableHeight.value);
 }
 
 onMounted(async () => {
