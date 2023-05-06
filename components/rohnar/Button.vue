@@ -6,6 +6,9 @@ const props = defineProps({
     },
     title: {
         type: String
+    },
+    isActive: {
+        type: Boolean
     }
 })
 const typeStyle = {
@@ -19,7 +22,7 @@ const buttonStyle = typeStyle[props.type]
 </script>
 
 <template>
-    <button :class="buttonStyle" :title="title">
+    <button :class="buttonStyle + (isActive ? ' active' : '')" :title="title">
         <slot></slot>
     </button>
 </template>
@@ -30,7 +33,18 @@ const buttonStyle = typeStyle[props.type]
         padding: 5px 8px;
         border-radius: 5px;
     }
-    .rohnar-text-button {
+    .active {
+        transition: 0.5s;
+        width: 75px;
+        border: black 2px solid;
+        padding: 3px;
+        border-radius: 5px;
+        background-color: gray;
+        color: white;
+    }
+    .rohnar-text-button:not(.active) {
+        transition: 0.5s;
+        width: 50px;
         padding: 5px 10px;
     }
 </style>

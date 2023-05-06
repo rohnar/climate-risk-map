@@ -1,113 +1,191 @@
-<script setup >
-import Papa from "papaparse"
-const dashboard = ref(null)
-const mapDiv = ref(null)
+<script setup>
+const showChart = useState("showChart", () => {
+  false;
+});
+function toggleMapChart() {
+  showChart.value = !showChart.value;
+}
+const dashboard = ref(null);
 const tableHeight = ref(null);
-const data = useState('allData')
-const currentSubset = useState('currentSubset')
-const limits = ref({year: null})
-const marks = computed(()=>{
-  let result = {}
+const {
+  currentSubset,
+  getData,
+  filterOptions,
+  filterData,
+  limits,
+  currentSubsetSortable,
+  pagination,
+} = useFilteredData();
+const marks = computed(() => {
+  let result = {};
   if (limits.value.year) {
-    let year = limits.value.year[0]
+    let year = limits.value.year[0];
     while (year <= limits.value.year[1]) {
-      result[year] = {label: ''+year, style: {color: 'black', fontWeight: 'bold'}}
-      year+=10
+      result[year] = {
+        label: "" + year,
+        style: { color: "black", fontWeight: "bold" },
+      };
+      year += 10;
     }
   }
-  console.log(result)
-  return result
-})
-const filterOptions = ref({
-  decade: null,
-  minLat: null,
-  maxLat: null
+  return result;
 });
 
-async function getData() {
-  return new Promise(resolve=>{
-    Papa.parse('sample.csv', {
-      download: true,
-      header: true,
-      complete: (results) => {
-        // console.log(results)
-        data.value = results.data;
-        data.value?.sort((a,b)=>{
-          return (+a.Year - +b.Year) + (+a.Lat - +b.Lat) + (+a.Long - +b.Long)
-        })
-        console.log(data.value.length)
-        limits.value.year = [+data.value[0].Year, +data.value[data.value.length - 1].Year]
-        filterOptions.value.decade = limits.value.year[0]
-        resolve()
-      },
-    })
-  }) 
-}
-
-function clusterData() {
-
-}
-
-function filterData() {
-  console.log(filterOptions.value)
-  currentSubset.value = data.value.filter((el)=>{
-    // Check if the year is within the specified range
-    if (filterOptions.value.decade && (+el.Year < filterOptions.value.decade || +el.Year >= filterOptions.value.decade+10)) {
-      return false;
-    }
-    // Check if the coordinates are within the specified range
-    if ((filterOptions.value.minLat && el.Lat < filterOptions.value.minLat) || (filterOptions.value.maxLat && el.Lat > filterOptions.value.maxLat)) {
-      return false;
-    }
-    if ((filterOptions.value.minLong && el.Lat < filterOptions.value.minLong) || (filterOptions.value.maxLong && el.Lat > filterOptions.value.maxLong)) {
-      return false;
-    }
-    return true;
+const appliedFilters = computed(()=>{
+  return Object.keys(filterOptions.value).filter((f)=>{
+    return f !== 'decade' && filterOptions.value[f]
   })
-  console.log(currentSubset.value.length, data.value.length)
-}
-
-onMounted(async ()=>{
-  await getData()
-  filterData()
-  // element ui table does not respect relative sizing, this is a workaround
-  await nextTick()
-  console.log(dashboard.value.offsetHeight, dashboard)
-  tableHeight.value = dashboard.value.offsetHeight - 450
-
-  /* this.$nextTick(()=>{
-  }) */
 })
 
+function removeFilter(filter) {
+  console.log(filter)
+  if (filter !== 'decade') {
+    delete filterOptions.value[filter]
+    filterData()
+  }
+}
+
+function onResize() {
+  tableHeight.value = dashboard.value.offsetHeight - 450;
+  console.log("resizing table", tableHeight.value);
+}
+
+onMounted(async () => {
+  await getData();
+  filterData();
+  // element ui table does not respect relative sizing, this is a workaround
+  await nextTick();
+  window.addEventListener("resize", onResize);
+  tableHeight.value = dashboard.value.offsetHeight - 450;
+});
+onUnmounted(() => {
+  window.removeEventListener("resize", onResize);
+});
 </script>
 
 <template>
-  <RohnarHeader class="h-[5vh]" />
-  <div class="h-[95vh] pb-1rem px-1rem grid grid-template-rows[400px,50px,50px,1fr] items-start" ref="dashboard">
-    <RohnarMap v-if="currentSubset?.length > 0" ref="mapDiv">
-      <el-slider v-if="limits.year" :min="limits.year[0]" :max="limits.year[1]" 
-        show-stops :step="10" :marks="marks"
-        @change="filterData"
-        v-model="filterOptions.decade">
-      </el-slider>
+  <div class="layout" ref="dashboard">
+    <RohnarHeader />
+    <RohnarMap v-if="currentSubset" class="">
+      <template #top>
+        <el-slider
+          v-if="limits.year"
+          :min="limits.year[0]"
+          :max="limits.year[1]"
+          show-stops
+          :step="10"
+          :marks="marks"
+          @change="filterData"
+          v-model="filterOptions.decade"
+        >
+        </el-slider>
+      </template>
     </RohnarMap>
-    <!-- <div class="flex items-center mb-5 mx-auto w-[97%] gap-1rem">
-      <el-slider v-if="limits.year" :min="limits.year[0]" :max="limits.year[1]" 
-        show-stops :step="10" :marks="marks"
-        @change="filterData"
-        v-model="filterOptions.decade">
-      </el-slider>
-    </div> -->
-    <ClimateRiskData
-      :headers="['Year','Asset Name', 'Business Category', 'Risk Rating', 'Risk Factors']" 
-      :columnWidths="[10,20,20,10,60]"
-      :tableHeight="tableHeight"
-      v-if="currentSubset" 
-      :data="currentSubset">
-    </ClimateRiskData>
+    <div class="filter-bar flex items-center">
+          <div
+            v-if="filterOptions"
+            class="flex items-start w-1/2 gap-0.5rem mx-2"
+          >
+            <el-tag effect="dark" closable @close="removeFilter(key)" class="w-auto" v-for="key in appliedFilters">
+              {{ key.toUpperCase() }}:&nbsp;{{ filterOptions[key] }}
+            </el-tag>
+            <!-- <div class="w-auto">
+          <RohnarButton @click="filterData">Go</RohnarButton>
+        </div> -->
+          </div>
+          <!-- <div>filters</div>
+        <div>filters</div> -->
+          <div class="flex w-1/2 justify-end" v-if="currentSubsetSortable">
+            <div :class="{'active-tab' : !showChart}" class="p-2 tab" @click="showChart ? toggleMapChart() : null">
+              <i class="fa fa-table"></i>
+              <el-pagination
+                :disabled="showChart"
+                v-model:current-page="pagination.currentPage"
+                :page-size="pagination.pageSize"
+                small
+                layout="prev, pager, next"
+                :total="currentSubsetSortable.length"
+              />
+            </div>
+            <div
+              :class="{'active-tab' : showChart}"
+              class="flex self-end p-2 tab"
+              @click="!showChart ? toggleMapChart() : null"
+              v-if="currentSubsetSortable"
+              >
+              <font-awesome-icon icon="fa-solid fa-line-chart" />
+            </div>
+          </div>
+        </div>
+    <div class="table-border">
+      <ClimateRiskData
+        :headers="[
+          'Year',
+          'Asset Name',
+          'Business Category',
+          'Risk Rating',
+          'Risk Factors',
+        ]"
+        :columnWidths="[10, 20, 20, 15, 60]"
+        :tableHeight="tableHeight"
+        v-if="currentSubset && !showChart"
+      >
+      </ClimateRiskData>
+      <ClimateRiskChart :height="tableHeight" v-else-if="showChart">
+      </ClimateRiskChart>
+    </div>
   </div>
 </template>
 
+<style scoped>
+.filter-bar {
+  padding-top: 5px;
+  /* background-color: rgba(255, 255, 255, 0.628); */
+  /* background-color: #aad3df; */
+}
+.tab {
+  transition: padding 1s;
+  color: rgb(91, 90, 90);
+  /* background-color: white; */
+  width: auto;
+  display: flex;
+  padding: 5px 20px;
+  align-items: center;
+  height: 40px;
+  border: 1px solid #adadad;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  /* box-shadow: 0 1px 4px; */
+}
+.tab:not(.active-tab) {
+  cursor: pointer;
+}
+.active-tab {
+  transition: padding 1s;
+  padding: 0 5rem;
+  border: solid 1px black;
+  border-bottom: none;
+  color: black;
+}
+.layout {
+  /* position: absolute; */
+  /* width: 95%; */
+  height: 95vh;
+  display: grid;
+  align-items: start;
+  grid-template-columns: 100%;
+  grid-template-rows: 5vh auto auto 1fr;
+  margin: 5px 1rem;
+  justify-content: center;
+}
+</style>
 <style>
+.table-border {
+  height: 100%;
+  justify-content: center;
+  border: 2px solid #adadad;
+  border-radius: 10px 0 8px 8px;
+  /* box-shadow: 0 2px 4px; */
+}
 
 </style>
